@@ -91,18 +91,10 @@ class CartController extends Controller
     // Изчистване на кошницата
     public function clear()
     {
-        // Лог за дебъгване
-        \Log::info('Clear cart method called for user: ' . auth()->id());
-    
-        // Изчистваме всички артикули в кошницата на текущия потребител
         CartItem::where('user_id', auth()->id())->delete();
-    
-        // Лог за дебъгване след изчистването
-        \Log::info('Cart items cleared for user: ' . auth()->id());
-    
-        // Връщаме потребителя обратно на страницата на кошницата със съобщение за успех
         return redirect()->route('cart.index')->with('success', 'Кошницата беше изчистена!');
     }
+    
     
     
 
