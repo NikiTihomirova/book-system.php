@@ -1,52 +1,27 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
-use App\Models\User;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Models\Book;
+use App\Models\CartItem;
 
 class UserController extends Controller
 {
-    public function __construct()
+    public function dashboard()
     {
-        $this->middleware('auth'); // Само авторизирани потребители
-        $this->middleware(function ($request, $next) {
-            if (auth()->user()->role != 'admin') { // Само администратори имат достъп
-                abort(403, 'Нямате достъп до тази страница');
-            }
-            return $next($request);
-        });
+        return view('user.dashboard');
     }
 
-    public function index()
+    public function books()
     {
-        $users = User::all(); // Вземи всички потребители
-        return view('admin.users.index', compact('users')); // Изведи потребителите
+        $books = Book::all(); // Извлича всички книги от базата
+        return view('user.books', compact('books'));
     }
 
-    public function edit($id)
+    public function cart()
     {
-        $user = User::findOrFail($id); // Намери потребителя по ID
-        return view('admin.users.edit', compact('user')); // Покажи формата за редактиране
+        $cartItems = auth()->user()->cartItems; // Извлича артикули от количката на текущия потребител
+        return view('user.cart', compact('cartItems'));
     }
-
-    public function update(Request $request, $id)
-    {
-        $user = User::findOrFail($id); // Намери потребителя по ID
-        $user->update($request->all()); // Обнови потребителските данни
-        return redirect()->route('admin.users.index'); // Пренасочи към списъка с потребители
-    }
-
-    public function destroy($id)
-    {
-        $user = User::findOrFail($id); // Намери потребителя по ID
-        $user->delete(); // Изтрий потребителя
-        return redirect()->route('admin.users.index'); // Пренасочи към списъка с потребители
-    }
-    public function cartItems()
-{
-    return $this->hasMany(CartItem::class);
-}
-
 }

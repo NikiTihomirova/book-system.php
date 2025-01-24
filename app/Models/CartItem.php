@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class CartItem extends Model
 {
+    use HasFactory;
+
     protected $fillable = ['user_id', 'book_id', 'quantity'];
 
     public function user()
@@ -18,5 +21,3 @@ class CartItem extends Model
         return $this->belongsTo(Book::class);
     }
 }
-
-
