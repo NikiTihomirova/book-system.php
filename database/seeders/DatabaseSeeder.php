@@ -12,6 +12,9 @@ class DatabaseSeeder extends Seeder
             AuthorSeeder::class,
             GenreSeeder::class,
             BookSeeder::class,
+            RolesTableSeeder::class,
+            RoleSeeder::class,
+            UserSeeder::class
         ]);
     }
 }

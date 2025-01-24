@@ -7,6 +7,18 @@
     <!-- Бутон за създаване на нова книга -->
     <a href="{{ route('admin.books.create') }}" class="btn btn-primary mb-3">Добави нова книга</a>
 
+    <!-- Показване на съобщения за грешки или успех -->
+    @if(session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+    @if(session('cart_message'))
+        <div class="alert alert-success">
+            {{ session('cart_message') }}
+        </div>
+    @endif
+
     <!-- Форма за търсене и филтриране -->
     <form method="GET" action="{{ route('admin.books.index') }}">
         <div class="row mb-4">
@@ -17,13 +29,10 @@
                 <select name="genre" class="form-control">
                     <option value="">Всички жанрове</option>
                     @foreach($genres as $genre)
-                        <option value="{{ $genre->id }}" {{ request('genre') == $genre->id ? 'selected' : '' }}>
-                            {{ $genre->name }}
-                        </option>
+                        <option value="{{ $genre->id }}" {{ request('genre') == $genre->id ? 'selected' : '' }}>{{ $genre->name }}</option>
                     @endforeach
                 </select>
             </div>
-            
             <div class="col-md-2">
                 <input type="number" name="min_price" class="form-control" placeholder="Мин. цена" value="{{ request('min_price') }}">
             </div>
@@ -41,7 +50,8 @@
         @foreach($books as $book)
             <div class="col-md-6 col-lg-4 mb-4">
                 <div class="card">
-                    <img src="{{ asset('storage/' . $book->image) }}" class="card-img-top" alt="Изображение на {{ $book->title }}">
+                    <!-- Проверка дали книгата има изображение -->
+                    <img src="{{ asset('storage/' . ($book->image ? $book->image : 'default.jpg')) }}" class="card-img-top" alt="Изображение на {{ $book->title }}" style="max-width: 100%; height: auto;">
                     <div class="card-body">
                         <h5 class="card-title">{{ $book->title }}</h5>
                         <p class="card-text">{{ Str::limit($book->description, 100) }}</p>
@@ -50,8 +60,8 @@
                         <!-- Бутон за редактиране -->
                         <a href="{{ route('admin.books.edit', $book) }}" class="btn btn-warning btn-sm">Редактирай</a>
                         
-                        <!-- Бутон за изтриване -->
-                        <form action="{{ route('admin.books.destroy', $book->id) }}" method="POST" style="display:inline;">
+                        <!-- Потвърждение за изтриване -->
+                        <form action="{{ route('admin.books.destroy', $book->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Сигурни ли сте, че искате да изтриете тази книга?');">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm">Изтрий</button>

@@ -11,18 +11,15 @@ return new class extends Migration
      */
     public function up()
 {
-    Schema::create('genres', function (Blueprint $table) {
+    Schema::create('roles', function (Blueprint $table) {
         $table->id();
-        $table->string('name');
+        $table->string('name')->unique(); // Името на ролята (admin, user)
         $table->timestamps();
     });
 }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('genres');
-    }
+public function down()
+{
+    Schema::dropIfExists('roles');
+}
 };

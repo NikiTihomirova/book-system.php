@@ -8,12 +8,20 @@ use Illuminate\Support\Facades\Auth;
 class RoleMiddleware
 {
     public function handle($request, Closure $next, $role)
-    {
-        if (!Auth::check() || Auth::user()->role !== $role) {
-            abort(403, 'Нямате достъп до тази страница');
-        }
-
-        return $next($request);
+{
+    if (!Auth::check()) {
+        dd('Потребителят не е логнат');
     }
+
+    $user = Auth::user();
+
+    if (!$user->roles()->where('name', $role)->exists()) {
+        dd('Нямате тази роля');
+    }
+
+    return $next($request);
 }
+
+}
+
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Book;  // Добавете този use
 
 class HomeController extends Controller
 {
@@ -23,6 +24,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $books = Book::latest()->take(5)->get(); // Последно добавени книги
+        return view('home', compact('books'));  // Предавайте данните на изгледа
     }
 }

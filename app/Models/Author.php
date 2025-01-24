@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Author extends Model
 {
-    use HasFactory; // Увери се, че това е добавено
+    use HasFactory; 
 
-    protected $fillable = ['name']; // Увери се, че полетата са правилни
+    protected $fillable = ['name']; 
 
     public function books()
     {

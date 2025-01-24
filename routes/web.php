@@ -31,8 +31,7 @@ Route::get('/books', [BookController::class, 'index'])->name('books.index');
 
 // Потребителски маршрути
 Route::middleware(['auth', 'role:user'])->group(function () {
-    // В routes/web.php
-Route::get('/user/cart', [CartController::class, 'index'])->name('user.cart');
+    Route::get('/user/cart', [CartController::class, 'index'])->name('user.cart');
 
     Route::get('/user/dashboard', function () {
         return view('user.dashboard');

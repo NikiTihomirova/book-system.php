@@ -9,6 +9,22 @@ use Illuminate\Http\Request;
 class GenreController extends Controller
 {
     /**
+     * Конструктор с middleware за проверка на достъпа.
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+
+        // Ограничаваме достъпа само за администратори
+        $this->middleware(function ($request, $next) {
+            if (auth()->user()->role !== 'admin') {
+                abort(403, 'Нямате достъп до тази страница.');
+            }
+            return $next($request);
+        })->only(['create', 'store', 'edit', 'update', 'destroy']);
+    }
+
+    /**
      * Списък с всички жанрове.
      */
     public function index()
@@ -30,13 +46,13 @@ class GenreController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255|unique:genres,name',
         ]);
 
-        Genre::create($request->all());
+        Genre::create($validatedData);
 
-        return redirect()->route('genres.index')->with('success', 'Жанрът е добавен успешно!');
+        return redirect()->route('admin.genres.index')->with('success', 'Жанрът е добавен успешно!');
     }
 
     /**
@@ -52,13 +68,13 @@ class GenreController extends Controller
      */
     public function update(Request $request, Genre $genre)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255|unique:genres,name,' . $genre->id,
         ]);
 
-        $genre->update($request->all());
+        $genre->update($validatedData);
 
-        return redirect()->route('genres.index')->with('success', 'Данните за жанра са обновени успешно!');
+        return redirect()->route('admin.genres.index')->with('success', 'Данните за жанра са обновени успешно!');
     }
 
     /**
@@ -68,6 +84,6 @@ class GenreController extends Controller
     {
         $genre->delete();
 
-        return redirect()->route('genres.index')->with('success', 'Жанрът е изтрит успешно!');
+        return redirect()->route('admin.genres.index')->with('success', 'Жанрът е изтрит успешно!');
     }
 }

@@ -3,13 +3,32 @@
 @section('content')
 <div class="container">
     <h1>Редактиране на книга</h1>
+
+    <!-- Показване на съобщения за грешки -->
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <!-- Потвърждение за успешно съхранение -->
+    @if (session('status'))
+        <div class="alert alert-success">
+            {{ session('status') }}
+        </div>
+    @endif
+
     <form action="{{ route('admin.books.update', $book->id) }}" method="POST" enctype="multipart/form-data">
     @csrf
         @method('PUT')
 
         <div class="form-group">
             <label for="title">Заглавие</label>
-            <input type="text" name="title" class="form-control" id="title" value="{{ old('title', $book->title) }}" required>
+            <input type="text" name="title" class="form-control" id="title" value="{{ old('title', $book->title) }}" placeholder="Въведете заглавие" required>
         </div>
 
         <div class="form-group">
@@ -32,7 +51,7 @@
 
         <div class="form-group">
             <label for="price">Цена</label>
-            <input type="text" name="price" class="form-control" id="price" value="{{ old('price', $book->price) }}" required>
+            <input type="number" name="price" class="form-control" id="price" value="{{ old('price', $book->price) }}" placeholder="Въведете цена" required>
         </div>
 
         <div class="form-group">
@@ -40,9 +59,10 @@
             @if($book->image)
                 <div>
                     <img src="{{ asset('storage/' . $book->image) }}" alt="{{ $book->title }}" style="max-width: 100px; max-height: 100px;">
+                    <small class="form-text text-muted">Ако качите ново изображение, съществуващото ще бъде заменено.</small>
                 </div>
             @endif
-            <input type="file" name="image" class="form-control" id="image">
+            <input type="file" name="image" class="form-control" id="image" accept="image/*">
         </div>
 
         <button type="submit" class="btn btn-primary">Запази</button>
